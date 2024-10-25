@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Brain from '../../public/icons/brain.svg';
 import File from '../../public/icons/paperclip.svg';
 import Library from '../../public/icons/library.svg';
@@ -13,17 +13,24 @@ import Image from 'next/image';
 const ChatInput = ({ onSend, isLoading }) => {
   const [input, setInput] = useState('');
 
+  // Load saved input from localStorage when the component mounts
+  useEffect(() => {
+    const savedInput = localStorage.getItem('chatInput');
+    if (savedInput) {
+      setInput(savedInput);
+    }
+  }, []);
+
+  // Save input to localStorage whenever it changes
+  useEffect(() => {
+    localStorage.setItem('chatInput', input);
+  }, [input]);
+
   const handleSend = () => {
     if (input.trim() && !isLoading) {
       onSend(input);
       setInput(''); // Clear input after sending
-    }
-  };
-
-  const handleKeyPress = (e) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault(); // Prevent default line break on Enter
-      handleSend();
+      localStorage.removeItem('chatInput'); // Remove saved input after sending
     }
   };
 
@@ -32,27 +39,19 @@ const ChatInput = ({ onSend, isLoading }) => {
       <div className="flex justify-between items-center mb-2 px-3">
         <div className="flex gap-3 text-custom-grey items-center">
           {/* Icons */}
-          <div className="p-2 cursor-pointer hover:bg-gray-800 rounded-lg">
-            <Image src={Brain} alt="Brain" width={20} height={20} />
-          </div>
-          <div className="p-2 cursor-pointer hover:bg-gray-800 rounded-lg">
-            <Image src={File} alt="File" width={20} height={20} />
-          </div>
-          <div className="p-2 cursor-pointer hover:bg-gray-800 rounded-lg">
-            <Image src={Library} alt="Library" width={20} height={20} />
-          </div>
-          <div className="p-2 cursor-pointer hover:bg-gray-800 rounded-lg">
-            <Image src={Thermo} alt="Thermometer" width={20} height={20} />
-          </div>
-          <div className="p-2 cursor-pointer hover:bg-gray-800 rounded-lg">
-            <Image src={Timer} alt="Timer" width={20} height={20} />
-          </div>
-          <div className="p-2 cursor-pointer hover:bg-gray-800 rounded-lg">
-            <Image src={Mic} alt="Microphone" width={20} height={20} />
-          </div>
-          <div className="p-2 cursor-pointer hover:bg-gray-800 rounded-lg">
-            <Image src={Blocks} alt="Blocks" width={20} height={20} />
-          </div>
+          {[
+            { src: Brain, alt: "Brain" },
+            { src: File, alt: "File" },
+            { src: Library, alt: "Library" },
+            { src: Thermo, alt: "Thermometer" },
+            { src: Timer, alt: "Timer" },
+            { src: Mic, alt: "Microphone" },
+            { src: Blocks, alt: "Blocks" }
+          ].map((icon, index) => (
+            <div key={index} className="p-2 cursor-pointer hover:bg-gray-800 rounded-lg">
+              <Image src={icon.src} alt={icon.alt} width={20} height={20} />
+            </div>
+          ))}
           <div className="px-3 py-1 bg-gray-800 rounded-full text-xs cursor-pointer">Used 0</div>
         </div>
 
@@ -65,22 +64,23 @@ const ChatInput = ({ onSend, isLoading }) => {
           </div>
         </div>
       </div>
+
       <div className="flex p-2 max-w-3xl items-center rounded-lg">
-  <input
-    type="text"
-    className="flex-1 h-22 p-4 rounded bg-zinc-950 text-custom-grey placeholder-gray-400 focus:outline-none" // Adjusted padding and height
-    value={input}
-    onChange={(e) => setInput(e.target.value)}
-    placeholder="Type your message here..."
-    onKeyDown={(e) => {
-      if (e.key === 'Enter' && !e.shiftKey && !isLoading) {
-        e.preventDefault();
-        handleSend();
-      }
-    }}
-    disabled={isLoading} 
-  />
-</div>
+        <input
+          type="text"
+          className="flex-1 h-22 p-4 rounded bg-zinc-950 text-custom-grey placeholder-gray-400 focus:outline-none"
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          placeholder="Type your message here..."
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' && !e.shiftKey && !isLoading) {
+              e.preventDefault();
+              handleSend();
+            }
+          }}
+        />
+      </div>
+
       <div className="flex justify-end items-center mt-2 gap-2">
         <span className="text-custom-grey text-xs">↵ Send / ⌘ ↵ New Line</span>
         <button
