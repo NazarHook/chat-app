@@ -36,7 +36,9 @@ const ChatHistory = ({ activeChatId, setActiveChatId, chatSessions, startNewChat
           onChange={(e) => setSearchTerm(e.target.value)}
         />
       </div>
-      {filteredChats.length > 0 ? (
+      {chatSessions.length === 0 ? (
+        <p className="text-gray-500">No chats available. Start one by sending a message!</p>
+      ) : filteredChats.length > 0 ? (
         <ul className="bg-custom-dark">
           {filteredChats.map((chat, index) => (
             <li
