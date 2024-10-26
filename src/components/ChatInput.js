@@ -12,8 +12,6 @@ import Image from 'next/image';
 
 const ChatInput = ({ onSend, isLoading }) => {
   const [input, setInput] = useState('');
-
-  // Load saved input from localStorage when the component mounts
   useEffect(() => {
     const savedInput = localStorage.getItem('chatInput');
     if (savedInput) {
@@ -21,7 +19,6 @@ const ChatInput = ({ onSend, isLoading }) => {
     }
   }, []);
 
-  // Save input to localStorage whenever it changes
   useEffect(() => {
     localStorage.setItem('chatInput', input);
   }, [input]);
@@ -29,8 +26,8 @@ const ChatInput = ({ onSend, isLoading }) => {
   const handleSend = () => {
     if (input.trim() && !isLoading) {
       onSend(input);
-      setInput(''); // Clear input after sending
-      localStorage.removeItem('chatInput'); // Remove saved input after sending
+      setInput(''); 
+      localStorage.removeItem('chatInput');
     }
   };
 
@@ -38,7 +35,6 @@ const ChatInput = ({ onSend, isLoading }) => {
     <div className="w-full bg-zinc-950 p-3 rounded-lg">
       <div className="flex justify-between items-center mb-2 px-3">
         <div className="flex gap-3 text-custom-grey items-center">
-          {/* Icons */}
           {[
             { src: Brain, alt: "Brain" },
             { src: File, alt: "File" },

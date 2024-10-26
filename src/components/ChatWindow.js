@@ -11,14 +11,12 @@ const ChatWindow = () => {
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef(null);
 
-  // Scroll to the bottom whenever messages change
   useEffect(() => {
     if (messagesEndRef.current) {
       messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
     }
   }, [chatSessions, activeChatId]);
 
-  // Load chat sessions and active chat ID from local storage on component mount
   useEffect(() => {
     const storedChats = localStorage.getItem('chatSessions');
     const storedActiveChatId = localStorage.getItem('activeChatId');
@@ -30,16 +28,12 @@ const ChatWindow = () => {
       setActiveChatId(storedActiveChatId);
     }
   }, []);
-
-  // Save chat sessions and active chat ID to local storage whenever they change
   useEffect(() => {
     localStorage.setItem('chatSessions', JSON.stringify(chatSessions));
     if (activeChatId !== null) {
       localStorage.setItem('activeChatId', activeChatId);
     }
   }, [chatSessions, activeChatId]);
-
-  // Start a new chat session
   const startNewChat = () => {
     const newChat = {
       id: Date.now().toString(),
@@ -50,13 +44,10 @@ const ChatWindow = () => {
     setActiveChatId(newChat.id);
   };
 
-  // Handle sending a message
-  // Handle sending a message
 const sendMessage = (message) => {
-    if (!message.trim()) return; // Prevent empty messages
+    if (!message.trim()) return; 
   
     if (!activeChatId) {
-      // Create a new chat if there is no active chat
       const newChatId = Date.now().toString();
       const newChat = {
         id: newChatId,
@@ -65,9 +56,7 @@ const sendMessage = (message) => {
       };
       setChatSessions((prevChats) => [...prevChats, newChat]);
       setActiveChatId(newChatId);
-  
-      // Simulate a delay for fetching the response
-      setIsLoading(true);
+        setIsLoading(true);
       setTimeout(() => {
         setChatSessions((prevChats) =>
           prevChats.map((chat) =>
@@ -85,7 +74,6 @@ const sendMessage = (message) => {
         setIsLoading(false);
       }, 2000);
     } else {
-      // Add message to the existing active chat
       setChatSessions((prevChats) =>
         prevChats.map((chat) =>
           chat.id === activeChatId
@@ -95,13 +83,12 @@ const sendMessage = (message) => {
                   ...chat.messages,
                   { sender: 'User', text: message },
                 ],
-                topic: chat.messages.length === 0 ? message : chat.topic, // Set topic to first message
+                topic: chat.messages.length === 0 ? message : chat.topic, 
               }
             : chat
         )
       );
   
-      // Simulate a delay for fetching the response
       setIsLoading(true);
       setTimeout(() => {
         setChatSessions((prevChats) =>
@@ -122,12 +109,10 @@ const sendMessage = (message) => {
     }
   };
 
-  // Find active chat messages
   const activeChat = chatSessions.find((chat) => chat.id === activeChatId);
 
   return (
     <div className="flex h-full bg-zinc-950">
-      {/* Chat History Section */}
       <div className="w-1/4 h-full bg-custom-dark border-r border-gray-700">
         <ChatHistory
           activeChatId={activeChatId}
@@ -137,7 +122,6 @@ const sendMessage = (message) => {
         />
       </div>
 
-      {/* Chat Window Section */}
       <div className="flex flex-col flex-1 h-full">
         <div className="flex-1 overflow-y-auto p-4 bg-zinc-950 max-h-[calc(100vh-12rem)]">
           {activeChat?.messages.map((msg, index) => (

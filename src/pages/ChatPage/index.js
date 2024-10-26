@@ -2,7 +2,7 @@ import ChatWindow from '../../components/ChatWindow';
 
 const ChatPage = () => {
   return (
-    <div className="h-screen"> {/* Full screen height */}
+    <div className="h-screen"> 
       <ChatWindow />
     </div>
   );

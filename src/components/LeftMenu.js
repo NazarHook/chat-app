@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import Logo from '/public/logo.png'; // Placeholder path for the logo image
+import Logo from '/public/logo.png';
 import Folder from '/public/icons/folder.svg';
 import Chat from '/public/icons/chat.svg';
 import Compass from '/public/icons/compass.svg';
